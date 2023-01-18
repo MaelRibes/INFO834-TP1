@@ -1,31 +1,61 @@
-<html>
- <head>
- <meta charset="utf-8">
- <!-- importer le fichier de style -->
- <link rel="stylesheet" href="style.css" media="screen" type="text/css" />
- </head>
- <body>
- <div id="container">
- <!-- zone de connexion -->
- 
- <form action="verification.php" method="POST">
- <h1>Connexion</h1>
- 
- <label><b>Nom d'utilisateur</b></label>
- <input type="text" placeholder="Entrer le nom d'utilisateur" name="username" required>
+<?php
+include("config.php");
 
- <label><b>Mot de passe</b></label>
- <input type="password" placeholder="Entrer le mot de passe" name="password" required>
+$connection = $_POST["connection"];
 
- <input type="submit" id='submit' value='LOGIN' >
- <?php
- if(isset($_GET['erreur'])){
- $err = $_GET['erreur'];
- if($err==1 || $err==2)
- echo "<p style='color:red'>Utilisateur ou mot de passe incorrect</p>";
- }
- ?>
- </form>
- </div>
- </body>
+if (isset($connection)) {
+    if (empty($_POST['email'])) {
+        echo "Le champ Email est vide.";
+    } else {
+        if (empty($_POST['mdp'])) {
+            echo "Le champ Mot de passe est vide.";
+        } else {
+
+            $email = $_POST['email'];
+            $mdp = $_POST['mdp'];
+
+            $request = "SELECT * FROM `Utilisateurs`";
+
+            $utilisateurs = $conn->query($request);
+
+            while ($utilisateur = $utilisateurs->fetch()) {
+                if ($utilisateur['Email'] == $email && $utilisateur['Mdp'] == $mdp) {
+                    echo ('Connecté !');
+                    $cmd = "/usr/local/bin/python3 script_redis.py $email";
+                    $path = escapeshellcmd($cmd);
+                    $output = shell_exec($path);
+                    echo ("nombre de connexion : $output");
+                }
+            }
+        }
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form method="POST">
+        <label>
+            Email :
+        </label>
+        <input type=" text" placeholder="Email" name="email" require>
+
+        <label>
+            Mot de passe :
+        </label>
+        <input type="password" placeholder="Mot de passe" name="mdp" require>
+
+        <button type="submit" name="connection">Se connecter</button>
+    </form>
+</body>
+
 </html>
