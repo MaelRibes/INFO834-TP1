@@ -49,4 +49,6 @@ ALTER TABLE `Utilisateurs`
 COMMIT;
 ```
 
-Dans le fichier _login.php_, on crée un formulaire html permattant de connecter un utilisateur avec son email et son mot de passe. On vérifie si les champs du formulaires sont remplis avant de vérifier dans la base de données si l'utilisateur existe. Si c'est le cas, on lance le script python qui incrémente le compteur redis si celui-ci est inférieur à 10. Le script renvoie true si _cpt<10_ et false sinon.
+Dans le fichier _login.php_, on crée un formulaire html permattant de connecter un utilisateur avec son email et son mot de passe. On vérifie si les champs du formulaires sont remplis. On utilise le fichier _config.php_ pour initialiser la connexion avec la base de donnée avec PDO avant de vérifier dans celle-ci si l'utilisateur existe.
+
+Si c'est le cas, on lance le _script_redis.py_. Le script permet de récupérer la session redis de l'utilisateur qui tente de se connecter si elle existe et de la créer sinon. On vérifie ensuite si le compteur de connexions stocké dans la session est inférieur à 10. Si c'est le cas on permet la connexion et on incrémente le compteur de 1. Sinon, on refuse la connexion en affichant le nombre de minutes à attendre pour tenter une nouvelle connexion.

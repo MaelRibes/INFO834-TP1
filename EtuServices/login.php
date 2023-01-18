@@ -20,11 +20,10 @@ if (isset($connection)) {
 
             while ($utilisateur = $utilisateurs->fetch()) {
                 if ($utilisateur['Email'] == $email && $utilisateur['Mdp'] == $mdp) {
-                    echo ('Connecté !');
                     $cmd = "/usr/local/bin/python3 script_redis.py $email";
                     $path = escapeshellcmd($cmd);
                     $output = shell_exec($path);
-                    echo ("nombre de connexion : $output");
+                    echo ("$output");
                 }
             }
         }
